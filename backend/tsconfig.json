@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "module": "commonjs",
+    "sourceMap": true,
+    "outDir": "./dist",
+    "experimentalDecorators": true,
+    "types": ["node", "express"],
+    "esModuleInterop": true,
+    // "emitDecoratorMetadata": true,
+    "emitDecoratorMetadata": true
+  },
+  "exclude": ["jest.config.ts", "**/*.spec.ts", "**/*.test.ts"],
+  "include": ["**/*.ts"],
+  "types": ["node"],
+  "typeRoots": ["../node_modules/@types"]
+  // "include": ["src/**/*.ts"]
+}
