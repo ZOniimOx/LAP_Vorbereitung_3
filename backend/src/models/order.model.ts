@@ -22,5 +22,5 @@ export class Order {
   reseller: Reseller;
 
   @OneToMany(() => PCOrder, (pcorder) => pcorder.order)
-  pcorders: PCOrder;
+  pcorders: PCOrder[];
 }

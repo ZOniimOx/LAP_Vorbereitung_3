@@ -24,9 +24,9 @@ export class PC {
   @Column({ name: "price", type: "float", nullable: false })
   price: number;
 
-  @Column({ name: "ssdcapacity", nullable: false })
-  ssdcapacity: number;
+  @Column({ name: "ssdcapacity", nullable: false, length: 10 })
+  ssdcapacity: string;
 
   @OneToMany(() => PCOrder, (pcorder) => pcorder.pc)
-  pcorders: PCOrder;
+  pcorders: PCOrder[];
 }

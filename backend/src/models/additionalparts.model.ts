@@ -1,4 +1,11 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import {
+  Column,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  PrimaryGeneratedColumn,
+} from "typeorm";
+import { PCOrder } from "./pcorder.model";
 
 @Entity({ name: "additionalparts" })
 export class AdditionalParts {
@@ -10,4 +17,12 @@ export class AdditionalParts {
 
   @Column({ name: "price", type: "float" })
   price: number;
+
+  @ManyToMany(() => PCOrder)
+  @JoinTable({
+    name: "pcorderadditionalparts",
+    joinColumn: { name: "partid" },
+    inverseJoinColumn: { name: "pcorderid" },
+  })
+  pcorders: PCOrder[];
 }

@@ -7,10 +7,4 @@ export class Reseller {
 
   @Column({ name: "name", nullable: false })
   name: string;
-
-  @Column({ name: "username" })
-  username: string;
-
-  @Column({ name: "password" })
-  password: string;
 }

@@ -16,6 +16,10 @@ class MainRoutes {
     this.router.post("/orders", (req: Request, res: Response) => {
       mainController.createOrder(req, res);
     });
+
+    this.router.post("/pcorder", (req: Request, res: Response) => {
+      mainController.createPcOrder(req, res);
+    });
   }
 }
 
