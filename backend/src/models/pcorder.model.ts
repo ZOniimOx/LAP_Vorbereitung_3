@@ -24,7 +24,7 @@ export class PCOrder {
   pc: PC;
 
   @JoinColumn({ name: "orderid" })
-  @ManyToOne(() => Order, (order) => order.pcorders)
+  @ManyToOne(() => Order, (order) => order.pcorders, { onDelete: "CASCADE" })
   order: Order;
 
   @ManyToMany(() => AdditionalParts)

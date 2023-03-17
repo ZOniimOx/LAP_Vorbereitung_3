@@ -21,6 +21,6 @@ export class Order {
   @ManyToOne(() => Reseller)
   reseller: Reseller;
 
-  @OneToMany(() => PCOrder, (pcorder) => pcorder.order)
+  @OneToMany(() => PCOrder, (pcorder) => pcorder.order, { onDelete: "CASCADE" })
   pcorders: PCOrder[];
 }
