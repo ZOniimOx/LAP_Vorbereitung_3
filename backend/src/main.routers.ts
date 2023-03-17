@@ -9,6 +9,10 @@ class MainRoutes {
   }
 
   private baseconfig(): void {
+    this.router.get("/orders/:id", (req: Request, res: Response) => {
+      mainController.getOrderById(req, res);
+    });
+
     this.router.get("/orders", (req: Request, res: Response) => {
       mainController.getOrders(req, res);
     });
@@ -17,8 +21,17 @@ class MainRoutes {
       mainController.createOrder(req, res);
     });
 
+    this.router.delete("/orders/:id", (req: Request, res: Response) => {
+      mainController.deleteOrder(req, res);
+    });
+
+    // Pc order routes
     this.router.post("/pcorder", (req: Request, res: Response) => {
       mainController.createPcOrder(req, res);
+    });
+
+    this.router.delete("/pcorder/:id", (req: Request, res: Response) => {
+      mainController.deletePcOrder(req, res);
     });
   }
 }

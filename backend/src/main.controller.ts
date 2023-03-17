@@ -23,7 +23,35 @@ export class MainController {
       });
   }
 
-  public async createOrder(req: Request, res: Response) {
+  async getOrderById(req: Request, res: Response) {
+    const orderid: number = Number(req.params.id);
+
+    if(orderid === undefined || isNaN(orderid)) {
+      res.status(400).send('No orderid provieded')
+    }
+
+    (await dsDatabase)
+      .getRepository(Order)
+      .find({
+        where: {
+          orderid: orderid,
+        },
+        relations: [
+          "reseller",
+          "pcorders",
+          "pcorders.pc",
+          "pcorders.additionalparts",
+        ],
+      })
+      .then((result) => {
+        res.status(200).send(result);
+      })
+      .catch((err) => {
+        res.status(500).send(err);
+      });
+  }
+
+  async createOrder(req: Request, res: Response) {
     const data = req.body;
 
     (await dsDatabase)
@@ -35,72 +63,47 @@ export class MainController {
       .catch((err) => {
         res.status(500).send(err);
       });
-
-    // {
-    //     "orderdate": "2023-03-16",
-    //     "quantity": 5,
-    //     "reseller": {
-    //         "resellerid": 2
-    //     },
-    //     "pc": {
-    //         "pcid": 3
-    //     },
-    //     "additionalparts": [{
-    //         "partid": 2
-    //     }]
-    // }
-    // const data: CreateOrderRequest = req.body;
-
-    // //Create order object
-    // const order: Order = new Order();
-    // order.orderdate = data.orderdate;
-    // order.reseller = data.reseller;
-
-    // console.log(order);
-
-    // (await dsDatabase)
-    //   .getRepository(Order)
-    //   .save(order)
-    //   .then(async (result) => {
-    //     //Create pcorder object
-    //     const pcorder: PCOrder = new PCOrder();
-    //     pcorder.pc = data.pc;
-    //     pcorder.quantity = data.quantity;
-    //     pcorder.additionalparts = data.additionalparts;
-    //     pcorder.order = result;
-
-    //     (await dsDatabase)
-    //       .getRepository(PCOrder)
-    //       .save(pcorder)
-    //       .then((result) => {
-    //         res.status(200).send(result);
-    //       })
-    //       .catch((err) => {
-    //         res.status(500).send(err);
-    //       });
-    //   })
-    //   .catch((err) => {
-    //     res.status(500).send(err);
-    //   });
-
-    // (await dsDatabase)
-    //   .getRepository(Order)
-    //   .save(data)
-    //   .then((result) => {
-    //     res.status(200).send(result);
-    //   })
-    //   .catch((err) => {
-    //     res.status(500).send(err);
-    //   });
-
-    // res.status(200).send(data);
   }
 
   async createPcOrder(req: Request, res: Response) {
     const data = req.body;
     (await dsDatabase)
+
       .getRepository(PCOrder)
       .save(data)
+      .then((result) => {
+        res.status(200).send(result);
+      })
+      .catch((err) => {
+        res.status(500).send(err);
+      });
+  }
+
+  async deleteOrder(req: Request, res: Response) {
+    const orderid: number = Number(req.params.id);
+    if (orderid === undefined || isNaN(orderid)) {
+      res.status(404).send("No orderid provied");
+    }
+    (await dsDatabase)
+      .getRepository(Order)
+      .delete({ orderid: orderid })
+      .then((result) => {
+        res.status(200).send(result);
+      })
+      .catch((err) => {
+        res.status(500).send(err);
+      });
+  }
+
+  async deletePcOrder(req: Request, res: Response) {
+    const pcorderid: number = Number(req.params.id);
+    if (pcorderid === undefined || isNaN(pcorderid)) {
+      res.status(404).send("No orderid provied");
+    }
+
+    (await dsDatabase)
+      .getRepository(PCOrder)
+      .delete({ pcorderid: pcorderid })
       .then((result) => {
         res.status(200).send(result);
       })
