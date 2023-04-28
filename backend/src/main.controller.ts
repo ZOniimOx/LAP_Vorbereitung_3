@@ -1,115 +1,149 @@
 import { Request, Response } from "express";
-import { dsDatabase } from "./database.connection";
-import { Order, PCOrder } from "./models";
-import { CreateOrderRequest } from "./models/createorder.model";
+import { AdditionalParts, Order, PC, PCOrder } from "./models";
+import logger from "./logger.service";
+import { appDbDataSource } from "./database.connection";
 
 export class MainController {
-  public async getOrders(req: Request, res: Response) {
-    (await dsDatabase)
-      .getRepository(Order)
-      .find({
-        relations: [
-          "reseller",
-          "pcorders",
-          "pcorders.pc",
-          "pcorders.additionalparts",
-        ],
-      })
-      .then((result) => {
-        res.status(200).send(result);
-      })
-      .catch((err) => {
-        res.status(500).send(err);
-      });
+  //Get all orders
+  public async getOrders() {
+    return new Promise<Order[]>((resolve, reject) => {
+      appDbDataSource
+        .getRepository(Order)
+        .find({
+          relations: [
+            "reseller",
+            "pcorders",
+            "pcorders.pc",
+            "pcorders.additionalparts",
+          ],
+        })
+        .then((result) => {
+          resolve(result);
+        })
+        .catch((err) => {
+          logger.error(err);
+          reject(err);
+        });
+    });
   }
 
-  async getOrderById(req: Request, res: Response) {
-    const orderid: number = Number(req.params.id);
-
-    if(orderid === undefined || isNaN(orderid)) {
-      res.status(400).send('No orderid provieded')
-    }
-
-    (await dsDatabase)
-      .getRepository(Order)
-      .find({
-        where: {
-          orderid: orderid,
-        },
-        relations: [
-          "reseller",
-          "pcorders",
-          "pcorders.pc",
-          "pcorders.additionalparts",
-        ],
-      })
-      .then((result) => {
-        res.status(200).send(result);
-      })
-      .catch((err) => {
-        res.status(500).send(err);
-      });
+  async getOrderById(orderid: number) {
+    return new Promise<Order>((resolve, reject) => {
+      appDbDataSource
+        .getRepository(Order)
+        .findOne({
+          where: {
+            orderid: orderid,
+          },
+          relations: [
+            "reseller",
+            "pcorders",
+            "pcorders.pc",
+            "pcorders.additionalparts",
+          ],
+        })
+        .then((result) => {
+          resolve(result);
+        })
+        .catch((err) => {
+          logger.error(err);
+          reject(err);
+        });
+    });
   }
 
-  async createOrder(req: Request, res: Response) {
-    const data = req.body;
-
-    (await dsDatabase)
-      .getRepository(Order)
-      .save(data)
-      .then((result) => {
-        res.status(200).send(result);
-      })
-      .catch((err) => {
-        res.status(500).send(err);
-      });
+  async createOrder(order: Order) {
+    return new Promise<unknown>((resolve, reject) => {
+      appDbDataSource
+        .getRepository(Order)
+        .save(order)
+        .then((result) => {
+          resolve(result);
+        })
+        .catch((err) => {
+          logger.error(err);
+          reject(err);
+        });
+    });
   }
 
-  async createPcOrder(req: Request, res: Response) {
-    const data = req.body;
-    (await dsDatabase)
-
-      .getRepository(PCOrder)
-      .save(data)
-      .then((result) => {
-        res.status(200).send(result);
-      })
-      .catch((err) => {
-        res.status(500).send(err);
-      });
+  async createPcOrder(pcorder: PCOrder) {
+    return new Promise<unknown>((resolve, reject) => {
+      appDbDataSource
+        .getRepository(PCOrder)
+        .save(pcorder)
+        .then((result) => {
+          resolve(result);
+        })
+        .catch((err) => {
+          logger.error(err);
+          reject(err);
+        });
+    });
   }
 
-  async deleteOrder(req: Request, res: Response) {
-    const orderid: number = Number(req.params.id);
-    if (orderid === undefined || isNaN(orderid)) {
-      res.status(404).send("No orderid provied");
-    }
-    (await dsDatabase)
-      .getRepository(Order)
-      .delete({ orderid: orderid })
-      .then((result) => {
-        res.status(200).send(result);
-      })
-      .catch((err) => {
-        res.status(500).send(err);
-      });
+  //Delete order
+  async deleteOrder(orderid) {
+    return new Promise<unknown>((resolve, reject) => {
+      appDbDataSource
+        .getRepository(Order)
+        .delete({ orderid: orderid })
+        .then((result) => {
+          resolve(result);
+        })
+        .catch((err) => {
+          logger.error(err);
+          reject(err);
+        });
+    });
   }
 
-  async deletePcOrder(req: Request, res: Response) {
-    const pcorderid: number = Number(req.params.id);
-    if (pcorderid === undefined || isNaN(pcorderid)) {
-      res.status(404).send("No orderid provied");
-    }
+  //Delete pc order
+  async deletePcOrder(pcorderid) {
+    return new Promise<unknown>((resolve, reject) => {
+      appDbDataSource
+        .getRepository(PCOrder)
+        .delete({ pcorderid: pcorderid })
+        .then((result) => {
+          resolve(result);
+        })
+        .catch((err) => {
+          logger.error(err);
+          reject(err);
+        });
+    });
+  }
 
-    (await dsDatabase)
-      .getRepository(PCOrder)
-      .delete({ pcorderid: pcorderid })
-      .then((result) => {
-        res.status(200).send(result);
-      })
-      .catch((err) => {
-        res.status(500).send(err);
-      });
+  // Get all pcs
+  getPCs() {
+    return new Promise<PC[]>((resolve, reject) => {
+      const pcRepository = appDbDataSource.getRepository(PC);
+
+      pcRepository
+        .find()
+        .then((result) => {
+          resolve(result);
+        })
+        .catch((err: unknown) => {
+          reject(err);
+        });
+    });
+  }
+
+  //Get all additional parts
+  getAdditionalParts() {
+    return new Promise<AdditionalParts[]>((resolve, reject) => {
+      const apRepository = appDbDataSource.getRepository(AdditionalParts);
+      apRepository
+        .find()
+        .then((result) => {
+          resolve(result);
+        })
+        .catch((err) => {
+          logger.error(err);
+          reject(err);
+        });
+    });
   }
 }
 

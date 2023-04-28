@@ -1,6 +1,7 @@
 import { Router, Request, Response, response } from "express";
 import { mainController } from "./main.controller";
-
+import logger from "./logger.service";
+import { Order, PCOrder } from "./models";
 class MainRoutes {
   public router: Router = Router();
 
@@ -9,29 +10,118 @@ class MainRoutes {
   }
 
   private baseconfig(): void {
+    // Get order by id
     this.router.get("/orders/:id", (req: Request, res: Response) => {
-      mainController.getOrderById(req, res);
+      const orderid: number = Number(req.params.id);
+
+      if (orderid === undefined || isNaN(orderid)) {
+        res.status(400).send("No orderid provieded");
+      }
+      mainController
+        .getOrderById(orderid)
+        .then((result) => {
+          res.status(200).send(result);
+        })
+        .catch((err) => {
+          res.status(500).send(err);
+        });
     });
 
+    //Get all orders
     this.router.get("/orders", (req: Request, res: Response) => {
-      mainController.getOrders(req, res);
+      mainController
+        .getOrders()
+        .then((result) => {
+          res.status(200).send(result);
+        })
+        .catch((err) => {
+          res.status(500).send(err);
+        });
     });
 
+    //Create order
     this.router.post("/orders", (req: Request, res: Response) => {
-      mainController.createOrder(req, res);
+      const order = req.body as Order;
+      mainController
+        .createOrder(order)
+        .then((result) => {
+          res.status(200).send(result);
+        })
+        .catch((err) => {
+          res.status(500).send(err);
+        });
     });
 
+    // delete orders
     this.router.delete("/orders/:id", (req: Request, res: Response) => {
-      mainController.deleteOrder(req, res);
+      const orderid: number = Number(req.params.id);
+      if (orderid === undefined || isNaN(orderid)) {
+        res.status(404).send("No orderid provied");
+      }
+
+      mainController
+        .deleteOrder(orderid)
+        .then((result) => {
+          res.status(200).send(result);
+        })
+        .catch((err) => {
+          res.status(500).send(err);
+        });
     });
 
-    // Pc order routes
+    // Create pcorder
     this.router.post("/pcorder", (req: Request, res: Response) => {
-      mainController.createPcOrder(req, res);
+      const pcorder = req.body as PCOrder;
+      mainController
+        .createPcOrder(pcorder)
+        .then((result) => {
+          res.status(200).send(result);
+        })
+        .catch((err) => {
+          res.status(500).send(err);
+        });
     });
 
     this.router.delete("/pcorder/:id", (req: Request, res: Response) => {
-      mainController.deletePcOrder(req, res);
+      const pcorderid: number = Number(req.params.id);
+      if (pcorderid === undefined || isNaN(pcorderid)) {
+        res.status(404).send("No orderid provied");
+      }
+
+      mainController
+        .deletePcOrder(pcorderid)
+        .then((result) => {
+          res.status(200).send(result);
+        })
+        .catch((err) => {
+          res.status(500).send(err);
+        });
+    });
+
+    //PC routes
+    this.router.get("/pc", (req: Request, res: Response) => {
+      mainController
+        .getPCs()
+        .then((result) => {
+          res.status(200).send(result);
+        })
+        .catch((err) => {
+          logger.error(err);
+          res.status(500).send(err);
+        });
+    });
+
+    //Get all additional parts
+    this.router.get("/pc/additionalparts", (req: Request, res: Response) => {
+      mainController
+        .getAdditionalParts()
+        .then((result) => {
+          res.status(200).send(result);
+        })
+        .catch((err) => {
+          logger.error(err);
+          res.status(500).send(err);
+        });
     });
   }
 }

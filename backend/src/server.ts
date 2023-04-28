@@ -1,10 +1,13 @@
 import { app } from "./app";
-import { dsDatabase } from "./database.connection";
+import { createDBConnection } from "./database.connection";
+import logger from "./logger.service";
 
-dsDatabase
+const port: number = 3000;
+
+createDBConnection()
   .then(() => {
-    app.listen(3000, () => {
-      console.log("App listning on port 3000");
+    app.listen(port, () => {
+      logger.info("App listning on port " + port);
     });
   })
   .catch((err) => {

@@ -1,7 +1,7 @@
 import { DataSource } from "typeorm";
 import * as entities from "./models";
 
-export const dbConnection = new DataSource({
+export const appDbDataSource = new DataSource({
   type: "mysql",
   host: "localhost",
   port: 3306,
@@ -13,4 +13,10 @@ export const dbConnection = new DataSource({
   synchronize: true,
 });
 
-export const dsDatabase = dbConnection.initialize();
+// export const dsDatabase = dbConnection.initialize();
+
+export async function createDBConnection(): Promise<DataSource> {
+  await appDbDataSource.initialize();
+
+  return appDbDataSource;
+}
