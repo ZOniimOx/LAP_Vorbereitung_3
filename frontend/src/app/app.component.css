@@ -1,0 +1,18 @@
+.column {
+  float: left;
+  width: 32.5%;
+  margin-right: 0;
+}
+
+h1 {
+  text-align: center !important;
+  width: 100%;
+}
+
+.icon-button {
+  margin: 0px;
+}
+
+kendo-appbar {
+  background-color: #009add;
+}
