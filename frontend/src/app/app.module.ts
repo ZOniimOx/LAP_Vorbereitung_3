@@ -12,6 +12,9 @@ import { LoginComponent } from './components/login/login.component';
 import { OrderOverviewComponent } from './components/order-overview/order-overview.component';
 import { IconsModule } from '@progress/kendo-angular-icons';
 import { ButtonsModule } from '@progress/kendo-angular-buttons';
+import { LayoutModule } from '@progress/kendo-angular-layout';
+import { DbService } from './services/db.service';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -29,8 +32,10 @@ import { ButtonsModule } from '@progress/kendo-angular-buttons';
     GridModule,
     IconsModule,
     ButtonsModule,
+    LayoutModule,
+    HttpClientModule,
   ],
-  providers: [],
+  providers: [DbService],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

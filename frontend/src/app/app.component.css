@@ -16,3 +16,21 @@ h1 {
 kendo-appbar {
   background-color: #009add;
 }
+
+kendo-drawer-container {
+  height: 100%;
+  width: 100%;
+}
+
+kendo-drawer-content {
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+kendo-drawer {
+  background-color: #262626;
+  color: white;
+  height: 100%;
+  align-self: stretch;
+  /* height: 100%; */
+}
