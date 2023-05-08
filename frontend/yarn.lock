@@ -1664,6 +1664,15 @@
     "@progress/kendo-angular-schematics" "11.6.0"
     tslib "^2.3.1"
 
+"@progress/kendo-angular-layout@11.6":
+  version "11.6.0"
+  resolved "https://gitlab.alt.flextronics.com:5556/@progress%2fkendo-angular-layout/-/kendo-angular-layout-11.6.0.tgz#6fff441ba3b77ab479fca1b1eb69f3397ef40828"
+  integrity sha512-6lLsBB9rAYTN7vmQcr9mCI47Aev2sl653h6JfL9l+st+mtPaIprPxKgsHjrY5MQpigqRJ+6rYkAfYrhesx/SSw==
+  dependencies:
+    "@progress/kendo-angular-schematics" "11.6.0"
+    "@progress/kendo-draggable" "^3.0.2"
+    tslib "^2.3.1"
+
 "@progress/kendo-angular-navigation@^11.6.0":
   version "11.6.0"
   resolved "https://gitlab.alt.flextronics.com:5556/@progress%2fkendo-angular-navigation/-/kendo-angular-navigation-11.6.0.tgz#6933ddcb530f1818181f0ddf3559bef6784f1b6e"
@@ -1688,6 +1697,14 @@
   dependencies:
     "@progress/kendo-angular-schematics" "11.6.0"
     "@progress/kendo-popup-common" "^1.7.0"
+    tslib "^2.3.1"
+
+"@progress/kendo-angular-progressbar@11.6":
+  version "11.6.0"
+  resolved "https://gitlab.alt.flextronics.com:5556/@progress%2fkendo-angular-progressbar/-/kendo-angular-progressbar-11.6.0.tgz#ebff8f08c8732a12fa0de31e85305df9da992496"
+  integrity sha512-3KeXurkPFgn3cVAMiyyJJzgi15jgDEXat/xRWOLHt4xvEs8v99+9aICqbuFQ3bQFve2JHORmciGALi6P4Mh/Ag==
+  dependencies:
+    "@progress/kendo-angular-schematics" "11.6.0"
     tslib "^2.3.1"
 
 "@progress/kendo-angular-schematics@11.6.0":
