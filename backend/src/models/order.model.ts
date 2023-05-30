@@ -1,26 +1,35 @@
 import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  OneToMany,
-  PrimaryGeneratedColumn,
-} from "typeorm";
-import { Reseller } from "./reseller.model";
-import { PCOrder } from "./pcorder.model";
+	Column,
+	Entity,
+	JoinColumn,
+	ManyToOne,
+	OneToMany,
+	PrimaryGeneratedColumn,
+} from 'typeorm';
+import { Reseller } from './reseller.model';
+import { PCOrder } from './pcorder.model';
 
-@Entity({ name: "orders" })
+@Entity({ name: 'orders' })
 export class Order {
-  @PrimaryGeneratedColumn({ name: "orderid" })
-  orderid: number;
+	@PrimaryGeneratedColumn({ name: 'orderid' })
+	orderid: number;
 
-  @Column({ name: "orderdate", type: "date", nullable: false })
-  orderdate: Date;
+	@Column({
+		name: 'ordernumber',
+		nullable: false,
+	})
+	ordernumber: string;
 
-  @JoinColumn({ name: "resellerid" })
-  @ManyToOne(() => Reseller)
-  reseller: Reseller;
+	@Column({ name: 'orderdate', type: 'datetime', nullable: false })
+	orderdate: Date;
 
-  @OneToMany(() => PCOrder, (pcorder) => pcorder.order, { onDelete: "CASCADE" })
-  pcorders: PCOrder[];
+	@JoinColumn({ name: 'resellerid' })
+	@ManyToOne(() => Reseller)
+	reseller: Reseller;
+
+	@OneToMany(() => PCOrder, (pcorder) => pcorder.order, {
+		onDelete: 'CASCADE',
+		cascade: ['insert', 'insert'],
+	})
+	pcorders: PCOrder[];
 }
