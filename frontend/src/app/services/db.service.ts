@@ -10,12 +10,16 @@ import { Injectable } from '@angular/core';
   providedIn: 'root',
 })
 export class DbService {
-  apiUrl = 'localhost:3000/api';
+  apiUrl = 'http://localhost:3000/api';
 
   constructor(private http: HttpClient) {}
 
   getOrders() {
     return firstValueFrom(this.http.get<Order[]>(this.apiUrl + '/orders'));
+  }
+
+  getPcOrders() {
+    return firstValueFrom(this.http.get<PCOrder[]>(`${this.apiUrl}/pcorder`));
   }
 
   createOrder(order: Order) {
@@ -24,6 +28,12 @@ export class DbService {
 
   createPcOrder(pcorder: PCOrder) {
     return firstValueFrom(this.http.post(`${this.apiUrl}/pcorder`, pcorder));
+  }
+
+  updatePcOrder(pcorder: any) {
+    return firstValueFrom(
+      this.http.put(`${this.apiUrl}/pcorder/${pcorder.pcorderid}`, pcorder)
+    );
   }
 
   deletOrder(orderid: number) {
@@ -37,7 +47,7 @@ export class DbService {
   }
 
   getPcs() {
-    return firstValueFrom(this.http.get<PC>(`${this.apiUrl}/pc`));
+    return firstValueFrom(this.http.get<PC[]>(`${this.apiUrl}/pc`));
   }
 
   getAdditionalParts() {
