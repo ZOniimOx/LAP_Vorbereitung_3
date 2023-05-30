@@ -109,7 +109,7 @@
     "@angular-devkit/architect" "0.1402.11"
     rxjs "6.6.7"
 
-"@angular-devkit/core@14.2.11":
+"@angular-devkit/core@14", "@angular-devkit/core@14.2.11":
   version "14.2.11"
   resolved "https://gitlab.alt.flextronics.com:5556/@angular-devkit%2fcore/-/core-14.2.11.tgz#a92397c1b4c04c2a710b9de9b53eecc78d7db6b3"
   integrity sha512-cBIGs6y9rykOQqnuAQOB1DgIRyBFYtvKRJb7QNUfIJ0qUfARKkuV/yikv3lrb95ePGkmoRzmjkFqcFZiYU+r7A==
@@ -120,7 +120,7 @@
     rxjs "6.6.7"
     source-map "0.7.4"
 
-"@angular-devkit/schematics@14.2.11":
+"@angular-devkit/schematics@14", "@angular-devkit/schematics@14.2.11":
   version "14.2.11"
   resolved "https://gitlab.alt.flextronics.com:5556/@angular-devkit%2fschematics/-/schematics-14.2.11.tgz#3ab31b736aaf1087b923050874fa1ce0a8bd74c4"
   integrity sha512-OTEOu4uf3kZDcSGYkuESxf/IOlJSn/GdLt63Sd1QwJu6pJSeFxkANw/WEWICZyJfRLNW6fdLJLEGPM9Zt5ZqAg==
@@ -1581,7 +1581,7 @@
     "@progress/kendo-date-math" "^1.1.0"
     tslib "^2.3.1"
 
-"@progress/kendo-angular-dialog@11.6.0":
+"@progress/kendo-angular-dialog@11.6":
   version "11.6.0"
   resolved "https://gitlab.alt.flextronics.com:5556/@progress%2fkendo-angular-dialog/-/kendo-angular-dialog-11.6.0.tgz#274c4dd4e74050f88747561a01bd0758d703fe18"
   integrity sha512-EGzGSBlirKy+CfGOA7DqTj34gruel8k8SWd2eh/pdHpRbeyBMNFcSklYctfX47xigFSgahckrji479RmmrauzQ==
@@ -1664,7 +1664,7 @@
     "@progress/kendo-angular-schematics" "11.6.0"
     tslib "^2.3.1"
 
-"@progress/kendo-angular-layout@11.6":
+"@progress/kendo-angular-layout@11.6.0":
   version "11.6.0"
   resolved "https://gitlab.alt.flextronics.com:5556/@progress%2fkendo-angular-layout/-/kendo-angular-layout-11.6.0.tgz#6fff441ba3b77ab479fca1b1eb69f3397ef40828"
   integrity sha512-6lLsBB9rAYTN7vmQcr9mCI47Aev2sl653h6JfL9l+st+mtPaIprPxKgsHjrY5MQpigqRJ+6rYkAfYrhesx/SSw==
@@ -1677,6 +1677,14 @@
   version "11.6.0"
   resolved "https://gitlab.alt.flextronics.com:5556/@progress%2fkendo-angular-navigation/-/kendo-angular-navigation-11.6.0.tgz#6933ddcb530f1818181f0ddf3559bef6784f1b6e"
   integrity sha512-rfn7q6uWF6JsRcJHOcBgPnkhPACfNMor6qNBR49CPtF+8dyKHXr66o7RjwkUZk9zEnVxsi4ZG1Mx+uGJ77tRNw==
+  dependencies:
+    "@progress/kendo-angular-schematics" "11.6.0"
+    tslib "^2.3.1"
+
+"@progress/kendo-angular-notification@11.6":
+  version "11.6.0"
+  resolved "https://gitlab.alt.flextronics.com:5556/@progress%2fkendo-angular-notification/-/kendo-angular-notification-11.6.0.tgz#3bc4cf8437ee5a88a8ce2e5e28bae4b1fbce53a1"
+  integrity sha512-dlYtTXIsQUMzmLuibG3FyhM6TfoeyF7XPvwkMxDL6imVOkZ/CiiCJZZnOyNsrAbneE0BJEJQx8GRc2BMTAMbEA==
   dependencies:
     "@progress/kendo-angular-schematics" "11.6.0"
     tslib "^2.3.1"
@@ -1699,7 +1707,7 @@
     "@progress/kendo-popup-common" "^1.7.0"
     tslib "^2.3.1"
 
-"@progress/kendo-angular-progressbar@11.6":
+"@progress/kendo-angular-progressbar@11.6.0":
   version "11.6.0"
   resolved "https://gitlab.alt.flextronics.com:5556/@progress%2fkendo-angular-progressbar/-/kendo-angular-progressbar-11.6.0.tgz#ebff8f08c8732a12fa0de31e85305df9da992496"
   integrity sha512-3KeXurkPFgn3cVAMiyyJJzgi15jgDEXat/xRWOLHt4xvEs8v99+9aICqbuFQ3bQFve2JHORmciGALi6P4Mh/Ag==
