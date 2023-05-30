@@ -15,6 +15,16 @@ import { ButtonsModule } from '@progress/kendo-angular-buttons';
 import { LayoutModule } from '@progress/kendo-angular-layout';
 import { DbService } from './services/db.service';
 import { HttpClientModule } from '@angular/common/http';
+import { DialogModule } from '@progress/kendo-angular-dialog';
+import { ReactiveFormsModule } from '@angular/forms';
+import { InputsModule } from '@progress/kendo-angular-inputs';
+import { LabelModule } from '@progress/kendo-angular-label';
+import { ComboBoxModule } from '@progress/kendo-angular-dropdowns';
+import {
+  DateInputModule,
+  DatePickerModule,
+} from '@progress/kendo-angular-dateinputs';
+import { NotificationModule } from '@progress/kendo-angular-notification';
 
 @NgModule({
   declarations: [
@@ -34,6 +44,14 @@ import { HttpClientModule } from '@angular/common/http';
     ButtonsModule,
     LayoutModule,
     HttpClientModule,
+    DialogModule,
+    ReactiveFormsModule,
+    InputsModule,
+    LabelModule,
+    ComboBoxModule,
+    DateInputModule,
+    DatePickerModule,
+    NotificationModule,
   ],
   providers: [DbService],
   bootstrap: [AppComponent],
