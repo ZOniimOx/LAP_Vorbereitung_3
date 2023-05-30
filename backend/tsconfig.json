@@ -5,7 +5,7 @@
     "sourceMap": true,
     "outDir": "./dist",
     "experimentalDecorators": true,
-    "types": ["node", "express"],
+    "types": ["node"],
     "esModuleInterop": true,
     // "emitDecoratorMetadata": true,
     "emitDecoratorMetadata": true
