@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -19,7 +18,10 @@ import { DialogModule } from '@progress/kendo-angular-dialog';
 import { ReactiveFormsModule } from '@angular/forms';
 import { InputsModule } from '@progress/kendo-angular-inputs';
 import { LabelModule } from '@progress/kendo-angular-label';
-import { ComboBoxModule } from '@progress/kendo-angular-dropdowns';
+import {
+  ComboBoxModule,
+  MultiSelectModule,
+} from '@progress/kendo-angular-dropdowns';
 import {
   DateInputModule,
   DatePickerModule,
@@ -52,6 +54,7 @@ import { NotificationModule } from '@progress/kendo-angular-notification';
     DateInputModule,
     DatePickerModule,
     NotificationModule,
+    MultiSelectModule,
   ],
   providers: [DbService],
   bootstrap: [AppComponent],

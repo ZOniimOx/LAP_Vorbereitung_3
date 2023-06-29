@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { AdditionalParts, Order, PC, PCOrder } from './models';
+import { AdditionalParts, Order, PC, PCOrder, Reseller, User } from './models';
 import logger from './logger.service';
 import { appDbDataSource } from './database.connection';
 import { log } from 'console';
@@ -183,6 +183,90 @@ export class MainController {
 					logger.error(err);
 					reject(err);
 				});
+		});
+	}
+
+	login(user: User) {
+		return new Promise<Reseller>((resolve, reject) => {
+			const userRepository = appDbDataSource.getRepository(User);
+			userRepository
+				.find({
+					where: { username: user.username },
+					relations: ['reseller'],
+				})
+				.then((result) => {
+					let reseller: Reseller;
+					console.log(result);
+					if (result.length > 0) {
+						result.forEach((e) => {
+							if (e.password === user.password) {
+								resolve(e.reseller);
+							}
+						});
+						reject({
+							type: 'passworderror',
+							message: 'wrong username/passowrd',
+						});
+					} else {
+						reject({
+							type: 'passworderror',
+							message: 'wrong username/passowrd',
+						});
+					}
+				})
+				.catch((err) => {
+					logger.error(err);
+					reject(err);
+				});
+		});
+	}
+
+	getOrdersByReseller(resellerid: number) {
+		return new Promise<PCOrder[]>((resolve, reject) => {
+			if (resellerid === undefined || isNaN(resellerid)) {
+				reject({ message: 'no resellerid provided' });
+			} else {
+				const orderRepository = appDbDataSource.getRepository(PCOrder);
+				orderRepository
+					.find({
+						relations: ['order', 'additionalparts', 'order.reseller', 'pc'],
+						where: {
+							order: {
+								reseller: {
+									reselerid: resellerid,
+								},
+							},
+						},
+					})
+					.then((result) => {
+						resolve(result);
+					})
+					.catch((err) => {
+						logger.error(err);
+						reject(err);
+					});
+			}
+		});
+	}
+
+	//Get reseller by id
+	getResellerById(reselerid: number) {
+		return new Promise<Reseller>((resolve, reject) => {
+			if (reselerid == undefined || isNaN(reselerid)) {
+				reject({ message: 'No resellerid provided' });
+			} else {
+				const resellerRepository = appDbDataSource.getRepository(Reseller);
+
+				resellerRepository
+					.findOneBy({ reselerid: reselerid })
+					.then((result) => {
+						resolve(result);
+					})
+					.catch((err) => {
+						logger.error(err);
+						reject(err);
+					});
+			}
 		});
 	}
 }

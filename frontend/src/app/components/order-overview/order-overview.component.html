@@ -1,67 +1,31 @@
 <h1>Order Overview</h1>
 <div #notification></div>
-<kendo-dialog
-  title="Create Order"
-  *ngIf="createDialog.open"
-  (close)="closeCreateDialog()"
-  [width]="1200"
->
+<kendo-dialog title="Create Order" *ngIf="createDialog.open" (close)="closeCreateDialog()" [width]="1200"
+  #createOrderDialog>
   <form class="k-form" [formGroup]="createDialog.formGroup!">
-    <!-- <kendo-formfield>
-      <kendo-label for="orderdate" text="Orderdate"></kendo-label>
-
-      <kendo-label for="orderdate" text="Orderdate"></kendo-label>
-      <kendo-datepicker
-        formControlName="orderdate"
-        format="dd.MMM.yyyy"
-        [weekNumber]="true"
-        [min]="now"
-      >
-      </kendo-datepicker>
-      <kendo-combobox
-        [data]="systemengineers.data"
-        [textField]="'userName'"
-        [valueField]="'staffno'"
-        [allowCustom]="true"
-        [virtual]="{ itemHeight: 28 }"
-        [suggest]="true"
-        [formControlName]="formEnum.engineeringstaffnr"
-        [valuePrimitive]="true"
-      ></kendo-combobox>
-    </kendo-formfield> -->
-
     <kendo-formfield>
       <kendo-label for="reseller" text="Reseller"></kendo-label>
-      <kendo-textbox
-        id="resellerid"
-        name="name"
-        formControlName="resellername"
-        [disabled]="true"
-      >
+      <kendo-textbox id="resellerid" name="name" formControlName="resellername">
+      </kendo-textbox>
+      </kendo-formfield>
+      <kendo-formfield>
+        <kendo-label for="ordernumber" text="Order number"></kendo-label>
+        <kendo-textbox id="ordernumberid" name="ordernumber" formControlName="ordernumber">
         <!-- formControlName="reseller" -->
       </kendo-textbox>
     </kendo-formfield>
     <kendo-formfield>
       <kendo-label for="orderdate" text="Orderdate"></kendo-label>
-      <kendo-datepicker
-        formControlName="orderdate"
-        format="dd.MM.yyyy"
-        [min]="now"
-      ></kendo-datepicker>
+      <kendo-datepicker formControlName="orderdate" format="dd.MM.yyyy" [min]="now"></kendo-datepicker>
     </kendo-formfield>
     <!-- <kendo-formfield>
       <kendo-label for="modelname" text="PC"></kendo-label>
       <kendo-textbox formControlName="modelname"> </kendo-textbox>
     </kendo-formfield> -->
     <br />
-    <kendo-grid
-      [data]="createDialog.grid.gridView"
-      [resizable]="true"
-      (add)="createGridAddHandler($event)"
-      (save)="createGridSaveHandler($event)"
-      (cancel)="createGridCancelHandler($event)"
-      (remove)="createGridRemoveHandler($event)"
-    >
+    <kendo-grid [data]="createDialog.grid.gridView" [resizable]="true" (add)="createGridAddHandler($event)"
+      (save)="createGridSaveHandler($event)" (cancel)="createGridCancelHandler($event)"
+      (remove)="createGridRemoveHandler($event)">
       <ng-template kendoGridToolbarTemplate>
         <button kendoGridAddCommand [primary]="true">Add new PC</button>
         <!-- <button kendoButton (click)="openCreateDialog()">Add New Order</button> -->
@@ -72,11 +36,7 @@
             <button kendoGridEditCommand [primary]="true">Edit</button>
           </ng-container> -->
           <button kendoGridRemoveCommand>Remove</button>
-          <button
-            kendoGridSaveCommand
-            [primary]="true"
-            [disabled]="createDialog.grid.formGroup.invalid"
-          >
+          <button kendoGridSaveCommand [primary]="true" [disabled]="createDialog.grid.formGroup.invalid">
             <!-- [disabled]="!orderGrid.formGroup.valid" -->
             <!-- [disabled]="grid.formGroup.invalid" -->
             {{ isNew ? "Add" : "Update" }}
@@ -86,74 +46,50 @@
           </button>
         </ng-template>
       </kendo-grid-command-column>
-      <kendo-grid-column field="pc.modelname" title="PC" [width]="200">
+      <kendo-grid-column field="pc.modelname" title="PC" [width]="170">
         <ng-template kendoGridEditTemplate let-formGroup="formGroup">
-          <kendo-combobox
-            [data]="pcs"
-            [allowCustom]="false"
-            [formControl]="formGroup.get('pc')"
-            [textField]="'modelname'"
-            [valueField]="'pcid'"
-            style="width: 100%"
-          >
+          <kendo-combobox [data]="pcs" [allowCustom]="false" [formControl]="formGroup.get('pc')" [textField]="'modelname'"
+            [valueField]="'pcid'" style="width: 100%">
             <!-- (valueChange)="pcDropdownValueChange($event)" -->
             <!-- 
-              [valuePrimitive]="true"
-              [placeholder]="'Type to search for a user'" 
-          [filterable]="true"
-            (filterChange)="userComboBoxFilterChanged($event)" -->
+                        [valuePrimitive]="true"
+                        [placeholder]="'Type to search for a user'" 
+                    [filterable]="true"
+                      (filterChange)="userComboBoxFilterChanged($event)" -->
           </kendo-combobox>
         </ng-template>
         <ng-template kendoGridCellTemplate let-dataItem>
           {{ dataItem.pc.modelname }}
         </ng-template>
       </kendo-grid-column>
-      <kendo-grid-column
-        field="quantity"
-        title="Quantity"
-        [width]="100"
-      ></kendo-grid-column>
-      <kendo-grid-column
-        field="additionalparts"
-        title="Additional Parts"
-        [width]="150"
-      ></kendo-grid-column>
-      <kendo-grid-column
-        field="pc.cpu"
-        title="CPU"
-        [editable]="false"
-        [width]="70"
-      ></kendo-grid-column>
-      <kendo-grid-column
-        field="pc.ramcapacity"
-        title="RAM"
-        [editable]="false"
-        [width]="70"
-      ></kendo-grid-column>
-      <kendo-grid-column
-        field="pc.microphone"
-        title="Microphone"
-        [editable]="false"
-        [width]="100"
-      ></kendo-grid-column>
-      <kendo-grid-column
-        field="pc.webcam"
-        title="Webcam"
-        [editable]="false"
-        [width]="100"
-      ></kendo-grid-column>
-      <kendo-grid-column
-        field="pc.price"
-        title="Price"
-        [editable]="false"
-        [width]="100"
-      ></kendo-grid-column>
-      <kendo-grid-column
-        field="pc.ssdcapacity"
-        title="SSD"
-        [editable]="false"
-        [width]="100"
-      ></kendo-grid-column>
+      <kendo-grid-column field="quantity" title="Quantity" [width]="80"></kendo-grid-column>
+      
+      <!-- <kendo-grid-column field="additionalparts" title="Additional Parts" [width]="150"></kendo-grid-column> -->
+      <kendo-grid-column field="additionalparts" title="Additional Parts" [width]="180">
+        <ng-template kendoGridCellTemplate let-dataItem>
+          <span *ngFor="let d of dataItem.additionalparts">
+            <div>{{ d.partname }}</div>
+          </span>
+        </ng-template>
+        <ng-template kendoGridEditTemplate let-dataItem="dataItem" let-formGroup="formGroup">
+          <kendo-multiselect [data]="additionalparts" [formControl]="formGroup.get('additionalparts')" [allowCustom]="false"
+            [valuePrimitive]="false" [textField]="'partname'" [valueField]="'partid'" [filterable]="false" [readonly]="false">
+          </kendo-multiselect>
+        </ng-template>
+      </kendo-grid-column>
+      <kendo-grid-column field="total" title="Total" [width]="100">
+        <ng-template kendoGridCellTemplate let-dataItem>
+          <span>
+            {{dataItem.total | currency: 'EUR'}}
+          </span>
+        </ng-template>
+      </kendo-grid-column>
+      <kendo-grid-column field="pc.cpu" title="CPU" [editable]="false" [width]="60"></kendo-grid-column>
+      <kendo-grid-column field="pc.ramcapacity" title="RAM" [editable]="false" [width]="60"></kendo-grid-column>
+      <kendo-grid-column field="pc.microphone" title="Microphone" [editable]="false" [width]="90"></kendo-grid-column>
+      <kendo-grid-column field="pc.webcam" title="Webcam" [editable]="false" [width]="80"></kendo-grid-column>
+      <kendo-grid-column field="pc.price" title="Price" [editable]="false" [width]="60"></kendo-grid-column>
+      <kendo-grid-column field="pc.ssdcapacity" title="SSD" [editable]="false" [width]="70"></kendo-grid-column>
     </kendo-grid>
   </form>
   <kendo-dialog-actions>
@@ -164,21 +100,10 @@
   </kendo-dialog-actions>
 </kendo-dialog>
 
-<kendo-grid
-  [data]="orderGrid.gridView"
-  [loading]="orderGrid.loading"
-  [filter]="orderGrid.state.filter"
-  [filterable]="true"
-  [sort]="orderGrid.state.sort"
-  [sortable]="true"
-  [groupable]="false"
-  [group]="orderGrid.state.group"
-  (dataStateChange)="gridDataStateChange($event)"
-  (edit)="gridEditHandler($event)"
-  (cancel)="gridCancelHandler($event)"
-  (remove)="gridRemoveHandler($event)"
-  (save)="gridSaveHandler($event)"
->
+<kendo-grid [data]="orderGrid.gridView" [loading]="orderGrid.loading" [filter]="orderGrid.state.filter"
+  [filterable]="true" [sort]="orderGrid.state.sort" [sortable]="true" [groupable]="false"
+  [group]="orderGrid.state.group" (dataStateChange)="gridDataStateChange($event)" (edit)="gridEditHandler($event)"
+  (cancel)="gridCancelHandler($event)" (remove)="gridRemoveHandler($event)" (save)="gridSaveHandler($event)">
   <!-- (add)="gridAddHandler($event)" -->
   <ng-template kendoGridToolbarTemplate>
     <!-- <button kendoGridAddCommand [primary]="true">
@@ -192,6 +117,7 @@
       <span>
         {{ group.value }}
       </span>
+      <!-- <button kendoButton (click)="openEditDialog(group)" style="margin-left: 50px">Edit Order</button> -->
     </ng-template>
   </kendo-grid-column>
   <kendo-grid-column field="order.orderdate" title="Order date">
@@ -199,27 +125,20 @@
       {{ dataItem.order.orderdate | date : "dd.MM.yyyy" }}
     </ng-template>
   </kendo-grid-column>
-  <kendo-grid-column
-    field="order.reseller.name"
-    title="Reseller"
-  ></kendo-grid-column>
+  <kendo-grid-column field="order.reseller.name" title="Reseller"></kendo-grid-column>
   <kendo-grid-column field="pc.modelname" title="Model"></kendo-grid-column>
   <kendo-grid-column field="quantity" title="Quantity"></kendo-grid-column>
-  <kendo-grid-column
-    field="additionalparts"
-    title="Additional Parts"
-    [editable]="false"
-  >
+  <kendo-grid-column field="additionalparts" title="Additional Parts" [editable]="false">
     <ng-template kendoGridCellTemplate let-dataItem>
       {{
-        dataItem.additionalparts[0] !== undefined
-          ? dataItem.additionalparts[0].partname
-          : ""
+      dataItem.additionalparts[0] !== undefined
+      ? dataItem.additionalparts[0].partname
+      : ""
       }}
       {{
-        dataItem.additionalparts[1] !== undefined
-          ? ", " + dataItem.additionalparts[0].partname
-          : ""
+      dataItem.additionalparts[1] !== undefined
+      ? ", " + dataItem.additionalparts[0].partname
+      : ""
       }}
     </ng-template>
   </kendo-grid-column>
@@ -229,11 +148,7 @@
         <button kendoGridEditCommand [primary]="true">Edit</button>
         <button kendoGridRemoveCommand>Remove</button>
       </ng-container>
-      <button
-        kendoGridSaveCommand
-        [primary]="true"
-        [disabled]="!orderGrid.formGroup.valid"
-      >
+      <button kendoGridSaveCommand [primary]="true" [disabled]="!orderGrid.formGroup.valid">
         <!-- [disabled]="grid.formGroup.invalid" -->
         {{ isNew ? "Add" : "Update" }}
       </button>

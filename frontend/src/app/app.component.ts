@@ -48,6 +48,7 @@ export class AppComponent {
 
   login() {
     console.log('Logging in');
+    this.router.navigate(['/login']);
   }
 
   public onSelect(ev: DrawerSelectEvent): void {

@@ -1,10 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
-import { Order } from '../components/models/order.model';
-import { PCOrder } from '../components/models/pcorder.model';
-import { PC } from '../components/models/pc.model';
-import { AdditionalParts } from '../components/models/additionalparts.model';
+import { Order } from '../models/order.model';
+import { PCOrder } from '../models/pcorder.model';
+import { PC } from '../models/pc.model';
+import { AdditionalParts } from '../models/additionalparts.model';
 import { Injectable } from '@angular/core';
+import { User } from '../models/users.model';
+import { Reseller } from '../models/reseller.model';
 
 @Injectable({
   providedIn: 'root',
@@ -52,7 +54,25 @@ export class DbService {
 
   getAdditionalParts() {
     return firstValueFrom(
-      this.http.get<AdditionalParts>(`${this.apiUrl}/pc/additionalparts`)
+      this.http.get<AdditionalParts[]>(`${this.apiUrl}/pc/additionalparts`)
+    );
+  }
+
+  login(user: User) {
+    return firstValueFrom(
+      this.http.post<Reseller>(`${this.apiUrl}/login`, user)
+    );
+  }
+
+  getPcOrdersByReseller(resellerid: number) {
+    return firstValueFrom(
+      this.http.get<PCOrder[]>(`${this.apiUrl}/orders/reseller/${resellerid}`)
+    );
+  }
+
+  getResellerById(resellerid: number) {
+    return firstValueFrom(
+      this.http.get<Reseller>(`${this.apiUrl}/reseller/${resellerid}`)
     );
   }
 }

@@ -1,7 +1,7 @@
 import { Router, Request, Response, response } from 'express';
 import { mainController } from './main.controller';
 import logger from './logger.service';
-import { Order, PCOrder } from './models';
+import { Order, PCOrder, User } from './models';
 class MainRoutes {
 	public router: Router = Router();
 
@@ -10,21 +10,36 @@ class MainRoutes {
 	}
 
 	private baseconfig(): void {
+		//Get orders by reseller
+		this.router.get('/orders/reseller/:id', (req: Request, res: Response) => {
+			const resellerid: number = Number(req.params.id);
+			mainController
+				.getOrdersByReseller(resellerid)
+				.then((result) => {
+					res.status(200).send(result);
+				})
+				.catch((err) => {
+					console.log(err);
+					res.status(500).send(err);
+				});
+		});
+
 		// Get order by id
 		this.router.get('/orders/:id', (req: Request, res: Response) => {
 			const orderid: number = Number(req.params.id);
 
 			if (orderid === undefined || isNaN(orderid)) {
 				res.status(400).send('No orderid provieded');
+			} else {
+				mainController
+					.getOrderById(orderid)
+					.then((result) => {
+						res.status(200).send(result);
+					})
+					.catch((err) => {
+						res.status(500).send(err);
+					});
 			}
-			mainController
-				.getOrderById(orderid)
-				.then((result) => {
-					res.status(200).send(result);
-				})
-				.catch((err) => {
-					res.status(500).send(err);
-				});
 		});
 
 		//Get all orders
@@ -144,6 +159,38 @@ class MainRoutes {
 				})
 				.catch((err) => {
 					logger.error(err);
+					res.status(500).send(err);
+				});
+		});
+
+		this.router.post('/login', (req: Request, res: Response) => {
+			const user: User = req.body as User;
+			console.log(user);
+
+			mainController
+				.login(user)
+				.then((result) => {
+					res.status(200).send(result);
+				})
+				.catch((err) => {
+					if (err.type === 'passworderror') {
+						res.status(404).send(err);
+					} else {
+						res.status(500).send(err);
+					}
+				});
+		});
+
+		// Get reseller by id
+		this.router.get('/reseller/:id', (req: Request, res: Response) => {
+			const resellerid: number = Number(req.params.id);
+
+			mainController
+				.getResellerById(resellerid)
+				.then((result) => {
+					res.status(200).send(result);
+				})
+				.catch((err) => {
 					res.status(500).send(err);
 				});
 		});

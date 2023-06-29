@@ -6,7 +6,7 @@ import {
   ViewContainerRef,
 } from '@angular/core';
 import { DbService } from 'src/app/services/db.service';
-import { Order } from '../models/order.model';
+import { Order } from '../../models/order.model';
 import { State } from '@progress/kendo-data-query';
 import {
   CancelEvent,
@@ -18,17 +18,18 @@ import {
   AddEvent,
 } from '@progress/kendo-angular-grid';
 import { process } from '@progress/kendo-data-query';
-import { PCOrder } from '../models/pcorder.model';
+import { PCOrder } from '../../models/pcorder.model';
 import {
   FormBuilder,
   FormControl,
   FormGroup,
   Validators,
 } from '@angular/forms';
-import { PC } from '../models/pc.model';
-import { AdditionalParts } from '../models/additionalparts.model';
-import { Reseller } from '../models/reseller.model';
+import { PC } from '../../models/pc.model';
+import { AdditionalParts } from '../../models/additionalparts.model';
+import { Reseller } from '../../models/reseller.model';
 import { NotificationService } from '@progress/kendo-angular-notification';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-order-overview',
@@ -38,6 +39,8 @@ import { NotificationService } from '@progress/kendo-angular-notification';
 export class OrderOverviewComponent implements OnInit {
   @ViewChild('notification', { read: ViewContainerRef, static: false })
   public notification: ViewContainerRef | undefined;
+  @ViewChild('createOrderDialog', { read: ViewContainerRef, static: false })
+  public createOrderDialog: ViewContainerRef | undefined;
 
   orderGrid: {
     data: PCOrder[];
@@ -92,38 +95,78 @@ export class OrderOverviewComponent implements OnInit {
 
   pcs: PC[] = [];
 
+  additionalparts: AdditionalParts[] = [];
+
   now = new Date();
+
+  private reseller: Reseller = {} as Reseller;
 
   constructor(
     private dbService: DbService,
     private formBuilder: FormBuilder,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
-    this.GetOrders();
-    this.dbService
-      .getPcs()
-      .then((result) => {
-        this.pcs = result;
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+    this.route.queryParams.subscribe((params) => {
+      const resellerid = params['resellerid'];
+
+      this.dbService
+        .getResellerById(resellerid)
+        .then((result) => {
+          this.reseller = result;
+          this.GetOrders();
+          this.dbService
+            .getPcs()
+            .then((result) => {
+              this.pcs = result;
+            })
+            .catch((err) => {
+              console.error(err);
+            });
+        })
+        .catch((err) => {
+          this.notificationService.show({
+            appendTo: this.notification,
+            content: 'Error while getting Reseller',
+            position: { horizontal: 'center', vertical: 'bottom' },
+            animation: { type: 'fade', duration: 200 },
+            hideAfter: 2000,
+            type: { style: 'error', icon: true },
+          });
+          console.error(err);
+        });
+    });
   }
 
   GetOrders() {
-    this.orderGrid.loading = true;
-    this.dbService
-      .getPcOrders()
-      .then((result) => {
-        this.orderGrid.data = result;
-        this.orderGrid.gridView = process(result, this.orderGrid.state);
-        this.orderGrid.loading = false;
-      })
-      .catch((err) => {
-        console.error(err);
+    if (
+      this.reseller.reselerid != undefined &&
+      !isNaN(this.reseller.reselerid)
+    ) {
+      this.orderGrid.loading = true;
+      this.dbService
+        .getPcOrdersByReseller(this.reseller.reselerid)
+        .then((result) => {
+          this.orderGrid.data = result;
+          this.orderGrid.gridView = process(result, this.orderGrid.state);
+          this.orderGrid.loading = false;
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    } else {
+      this.notificationService.show({
+        appendTo: this.notification,
+        content: 'No resellerid present',
+        position: { horizontal: 'center', vertical: 'bottom' },
+        animation: { type: 'fade', duration: 200 },
+        hideAfter: 2000,
+        type: { style: 'error', icon: true },
       });
+      console.error('Resellerid: ' + this.reseller.reselerid);
+    }
   }
 
   gridDataStateChange(event: DataStateChangeEvent) {
@@ -212,7 +255,7 @@ export class OrderOverviewComponent implements OnInit {
       // additionalparts: new FormControl<AdditionalParts[] | null>([]),
       // reseller: new FormControl<string | null>(null),
       // modelname: new FormControl<string | null>(null),
-      // additionalParts: new FormControl<string | null>(null),
+      // additionalparts: new FormControl<string | null>(null),
     });
 
     if (dataItem) {
@@ -227,8 +270,22 @@ export class OrderOverviewComponent implements OnInit {
     // this.createDialog.formGroup = new FormGroup({});
     this.createDialog.formGroup = this.createDialogFormGroup();
     this.createDialog.open = true;
-    // console.log(this.createDialog.formGroup);
-    console.log(this.createDialog);
+    this.dbService
+      .getAdditionalParts()
+      .then((result) => {
+        this.additionalparts = result;
+      })
+      .catch((err) => {
+        this.notificationService.show({
+          appendTo: this.notification,
+          content: 'Error while getting additional parts',
+          position: { horizontal: 'center', vertical: 'bottom' },
+          animation: { type: 'fade', duration: 200 },
+          hideAfter: 2000,
+          type: { style: 'error', icon: true },
+        });
+        console.error(err);
+      });
   }
 
   closeCreateDialog() {
@@ -241,34 +298,41 @@ export class OrderOverviewComponent implements OnInit {
     };
   }
 
-  createDialogFormGroup(): FormGroup {
+  createDialogFormGroup(dataItem?: Order): FormGroup {
     const formGroup = this.formBuilder.group({
       orderdate: new FormControl<Date>(new Date()),
-      reseller: new FormControl<Reseller>({
-        name: 'Electronic4you',
-        reselerid: 2,
+      // reseller: new FormControl<Reseller>({
+      //   name: 'Electronic4you',
+      //   reselerid: 2,
+      // }),
+      ordernumber: new FormControl<string | null>(null, Validators.required),
+      resellername: new FormControl<string>({
+        value: this.reseller.name,
+        disabled: true,
       }),
-      // modelname: new FormControl<string | null>(null),
-      resellername: new FormControl<string>('Electronic4you'),
-      resellerid: new FormControl<number>(2),
-      // orderdate: new FormControl<Date>(new Date()),
+      resellerid: new FormControl<number>(this.reseller.reselerid),
     });
+
+    if (dataItem) {
+      formGroup.patchValue(dataItem);
+    }
 
     return formGroup;
   }
 
   createOrder() {
-    // console.log(this.createDialog.formGroup?.value);
-    // console.log(this.createDialog.grid.gridView.data);
-
     if (this.createDialog.formGroup?.valid) {
       const order: Order = {} as Order;
+
+      console.log(this.createDialog.formGroup);
 
       order.orderdate = this.createDialog.formGroup.get('orderdate')?.value;
       order.reseller = {
         name: this.createDialog.formGroup.get('resellername')?.value,
         reselerid: this.createDialog.formGroup.get('resellerid')?.value,
       };
+
+      order.ordernumber = this.createDialog.formGroup.get('ordernumber')?.value;
 
       order.pcorders = this.createDialog.grid.gridView.data;
 
@@ -289,31 +353,22 @@ export class OrderOverviewComponent implements OnInit {
           this.GetOrders();
         })
         .catch((err) => {
+          this.notificationService.show({
+            appendTo: this.createOrderDialog,
+            content: 'Error while creating order',
+            position: { horizontal: 'center', vertical: 'bottom' },
+            animation: { type: 'fade', duration: 200 },
+            hideAfter: 2000,
+            type: { style: 'error', icon: true },
+          });
           console.error(err);
         });
-
-      console.log(order);
-      // const pcorders: PCOrder = this.createDialog.grid.gridView.data as PCOrder[];
     }
   }
 
   // createGridAddHandler(event: { sender: GridComponent }) {
   createGridAddHandler(event: AddEvent) {
-    console.log(event);
-
-    console.log('Creating grid row');
-
-    console.log(this.createDialog);
-
     this.createDialog.grid.formGroup = this.createGridCreateFormGroup();
-
-    console.log(this.createDialog);
-
-    // this.closeEditor(event.sender);
-    // this.orderGrid.formGroup = this.gridCreateFormGroup();
-    // this.orderGrid.formGroup = this.formBuilder.group({
-    //   quantity: new FormControl<number | null>(null),
-    // });
     event.sender.addRow(this.createDialog.grid.formGroup);
   }
 
@@ -331,34 +386,26 @@ export class OrderOverviewComponent implements OnInit {
           Validators.pattern('^[0-9]{1,}'),
         ])
       ),
+      // additionalparts: new FormControl<number[] | null>(null),
       // cpu: new FormControl<string | null>(null),
     });
 
     if (dataItem) {
       formGroup.patchValue(dataItem);
     }
-    console.log(formGroup);
 
     return formGroup;
   }
 
   createGridSaveHandler(event: SaveEvent) {
-    // console.log(event);
-    // const pcorder: PCOrder = {
-    //   additionalparts: event.dataItem.additionalParts,
-    //   pc: {
-    //     modelname: event.dataItem.modelname,
-    //     cpu: event.dataItem.cpu,
-    //   },
-    //   quantity: event.dataItem.quantity,
-    // } as PCOrder;
     const pcorder: PCOrder = this.createDialog.grid.formGroup?.value;
+    pcorder.total = this.calculateTotal(pcorder);
 
     console.log(pcorder);
 
-    // console.log(pcorder);
+    console.log(this.createDialog.grid.formGroup);
 
-    event.sender.addRow(pcorder);
+    // event.sender.addRow(pcorder);
 
     this.createDialog.grid.gridData.push(pcorder);
     this.createDialog.grid.gridView = process(
@@ -378,8 +425,23 @@ export class OrderOverviewComponent implements OnInit {
     // });
   }
 
+  calculateTotal(pcorder: PCOrder) {
+    console.log(pcorder);
+
+    let pcprice: number = pcorder.pc.price;
+
+    console.log(pcorder.additionalparts);
+
+    if (pcorder.additionalparts !== null) {
+      pcorder.additionalparts.forEach((p) => {
+        pcprice += p.price;
+      });
+    }
+
+    return pcprice * pcorder.quantity;
+  }
+
   createGridRemoveHandler(event: RemoveEvent) {
-    console.log(event);
     this.createDialog.grid.gridView.data.splice(event.rowIndex, 1);
   }
 
@@ -394,12 +456,4 @@ export class OrderOverviewComponent implements OnInit {
     grid.closeRow(rowIndex);
     this.createDialog.grid.formGroup = new FormGroup({});
   }
-
-  // pcDropdownValueChange(event: any) {
-  //   const currentPc = this.pcs.find((e) => e.pcid === event);
-  //   // console.log(event);
-  //   console.log(currentPc);
-  //   console.log(this.createDialog.grid.formGroup);
-  //   this.createDialog.grid.formGroup.get('cpu')?.setValue(currentPc?.cpu);
-  // }
 }

@@ -1,1 +1,29 @@
-<p>login works!</p>
+<h1>Login</h1>
+<div #notification></div>
+
+<form class="k-form" [formGroup]="loginForm">
+  <kendo-formfield>
+    <kendo-label for="username" text="Username"></kendo-label>
+    <kendo-textbox id="usernameid" name="username" formControlName="username">
+    </kendo-textbox>
+  </kendo-formfield>
+  <kendo-formfield>
+    <kendo-label for="password" text="Password"></kendo-label>
+    <input
+      kendoTextBox
+      type="password"
+      id="passwordid"
+      name="password"
+      formControlName="password"
+    />
+  </kendo-formfield>
+  <button
+    kendoButton
+    (click)="login()"
+    [primary]="true"
+    style="margin-top: 30px"
+    [disabled]="!loginForm.valid"
+  >
+    Log in
+  </button>
+</form>
