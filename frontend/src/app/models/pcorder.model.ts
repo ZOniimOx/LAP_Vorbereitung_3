@@ -8,4 +8,5 @@ export interface PCOrder {
   pc: PC;
   order: Order;
   additionalparts: AdditionalParts[];
+  total: number;
 }

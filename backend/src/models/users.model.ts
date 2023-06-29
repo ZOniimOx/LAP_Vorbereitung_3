@@ -1,24 +1,24 @@
 import {
-  Column,
-  Entity,
-  JoinColumn,
-  OneToOne,
-  PrimaryGeneratedColumn,
-} from "typeorm";
-import { Reseller } from "./reseller.model";
+	Column,
+	Entity,
+	JoinColumn,
+	OneToOne,
+	PrimaryGeneratedColumn,
+} from 'typeorm';
+import { Reseller } from './reseller.model';
 
-@Entity({ name: "users" })
+@Entity({ name: 'users' })
 export class User {
-  @PrimaryGeneratedColumn({ name: "userid" })
-  userid: number;
+	@PrimaryGeneratedColumn({ name: 'userid' })
+	userid: number;
 
-  @Column({ name: " username", length: 30 })
-  username: string;
+	@Column({ name: ' username', length: 30 })
+	username: string;
 
-  @Column({ name: "password" })
-  passwort: string;
+	@Column({ name: 'password' })
+	password: string;
 
-  @OneToOne(() => Reseller)
-  @JoinColumn({ name: "resellerid" })
-  reseller: Reseller;
+	@OneToOne(() => Reseller)
+	@JoinColumn({ name: 'resellerid' })
+	reseller: Reseller;
 }

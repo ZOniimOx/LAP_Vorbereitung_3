@@ -3,6 +3,6 @@ import { Reseller } from './reseller.model';
 export interface User {
   userid: number;
   username: string;
-  passwort: string;
+  password: string;
   reseller: Reseller;
 }
