@@ -7,10 +7,10 @@
       <kendo-label for="reseller" text="Reseller"></kendo-label>
       <kendo-textbox id="resellerid" name="name" formControlName="resellername">
       </kendo-textbox>
-      </kendo-formfield>
-      <kendo-formfield>
-        <kendo-label for="ordernumber" text="Order number"></kendo-label>
-        <kendo-textbox id="ordernumberid" name="ordernumber" formControlName="ordernumber">
+    </kendo-formfield>
+    <kendo-formfield>
+      <kendo-label for="ordernumber" text="Order number"></kendo-label>
+      <kendo-textbox id="ordernumberid" name="ordernumber" formControlName="ordernumber">
         <!-- formControlName="reseller" -->
       </kendo-textbox>
     </kendo-formfield>
@@ -32,13 +32,8 @@
       </ng-template>
       <kendo-grid-command-column [width]="150">
         <ng-template kendoGridCellTemplate let-isNew="isNew" let-dataItem>
-          <!-- <ng-container>
-            <button kendoGridEditCommand [primary]="true">Edit</button>
-          </ng-container> -->
           <button kendoGridRemoveCommand>Remove</button>
           <button kendoGridSaveCommand [primary]="true" [disabled]="createDialog.grid.formGroup.invalid">
-            <!-- [disabled]="!orderGrid.formGroup.valid" -->
-            <!-- [disabled]="grid.formGroup.invalid" -->
             {{ isNew ? "Add" : "Update" }}
           </button>
           <button kendoGridCancelCommand>
@@ -50,12 +45,6 @@
         <ng-template kendoGridEditTemplate let-formGroup="formGroup">
           <kendo-combobox [data]="pcs" [allowCustom]="false" [formControl]="formGroup.get('pc')" [textField]="'modelname'"
             [valueField]="'pcid'" style="width: 100%">
-            <!-- (valueChange)="pcDropdownValueChange($event)" -->
-            <!-- 
-                        [valuePrimitive]="true"
-                        [placeholder]="'Type to search for a user'" 
-                    [filterable]="true"
-                      (filterChange)="userComboBoxFilterChanged($event)" -->
           </kendo-combobox>
         </ng-template>
         <ng-template kendoGridCellTemplate let-dataItem>
@@ -63,8 +52,6 @@
         </ng-template>
       </kendo-grid-column>
       <kendo-grid-column field="quantity" title="Quantity" [width]="80"></kendo-grid-column>
-      
-      <!-- <kendo-grid-column field="additionalparts" title="Additional Parts" [width]="150"></kendo-grid-column> -->
       <kendo-grid-column field="additionalparts" title="Additional Parts" [width]="180">
         <ng-template kendoGridCellTemplate let-dataItem>
           <span *ngFor="let d of dataItem.additionalparts">
@@ -100,24 +87,25 @@
   </kendo-dialog-actions>
 </kendo-dialog>
 
+<button kendoButton (click)="showKeys()">Show Keys</button>
+
 <kendo-grid [data]="orderGrid.gridView" [loading]="orderGrid.loading" [filter]="orderGrid.state.filter"
   [filterable]="true" [sort]="orderGrid.state.sort" [sortable]="true" [groupable]="false"
   [group]="orderGrid.state.group" (dataStateChange)="gridDataStateChange($event)" (edit)="gridEditHandler($event)"
-  (cancel)="gridCancelHandler($event)" (remove)="gridRemoveHandler($event)" (save)="gridSaveHandler($event)">
-  <!-- (add)="gridAddHandler($event)" -->
+  (cancel)="gridCancelHandler($event)" (remove)="gridRemoveHandler($event)" (save)="gridSaveHandler($event)"
+  kendoGridExpandGroupBy [groupsInitiallyExpanded]="false" [(expandedGroupKeys)]="orderGrid.expandedGroupKeys">
   <ng-template kendoGridToolbarTemplate>
-    <!-- <button kendoGridAddCommand [primary]="true">
-      [disabled]="!equipmentSelected"
-       Add new Order
-    </button> -->
     <button kendoButton (click)="openCreateDialog()">Add New Order</button>
   </ng-template>
   <kendo-grid-column field="order.ordernumber">
     <ng-template kendoGridGroupHeaderTemplate let-group="group">
+      <!-- let-aggregates="aggregates" -->
       <span>
         {{ group.value }}
       </span>
-      <!-- <button kendoButton (click)="openEditDialog(group)" style="margin-left: 50px">Edit Order</button> -->
+      <span style="margin-left: 50px">
+        Order Total: {{group.aggregates.total.sum | currency: 'EUR'}}
+      </span>
     </ng-template>
   </kendo-grid-column>
   <kendo-grid-column field="order.orderdate" title="Order date">
@@ -125,9 +113,20 @@
       {{ dataItem.order.orderdate | date : "dd.MM.yyyy" }}
     </ng-template>
   </kendo-grid-column>
-  <kendo-grid-column field="order.reseller.name" title="Reseller"></kendo-grid-column>
   <kendo-grid-column field="pc.modelname" title="Model"></kendo-grid-column>
   <kendo-grid-column field="quantity" title="Quantity"></kendo-grid-column>
+  <kendo-grid-column field="total" title="Total" [width]="100">
+    <!-- <ng-template kendoGridGroupFooterTemplate let-aggregates="aggregates">
+                          <span>
+                            {{aggregates.total.sum | currency: 'EUR'}}
+                          </span>
+                        </ng-template> -->
+    <ng-template kendoGridCellTemplate let-dataItem>
+      <span>
+        {{dataItem.total | currency: 'EUR'}}
+      </span>
+    </ng-template>
+  </kendo-grid-column>
   <kendo-grid-column field="additionalparts" title="Additional Parts" [editable]="false">
     <ng-template kendoGridCellTemplate let-dataItem>
       {{

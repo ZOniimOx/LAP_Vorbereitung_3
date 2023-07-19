@@ -7,7 +7,11 @@ import {
 } from '@angular/core';
 import { DbService } from 'src/app/services/db.service';
 import { Order } from '../../models/order.model';
-import { State } from '@progress/kendo-data-query';
+import {
+  State,
+  GroupDescriptor,
+  GroupResult,
+} from '@progress/kendo-data-query';
 import {
   CancelEvent,
   DataStateChangeEvent,
@@ -48,6 +52,7 @@ export class OrderOverviewComponent implements OnInit {
     formGroup: FormGroup;
     editedRowIndex?: number;
     loading: boolean;
+    expandedGroupKeys: unknown[];
     state: State;
   } = {
     data: [],
@@ -57,6 +62,7 @@ export class OrderOverviewComponent implements OnInit {
     },
     formGroup: new FormGroup({}),
     loading: true,
+    expandedGroupKeys: [],
     state: {
       sort: [
         {
@@ -67,7 +73,8 @@ export class OrderOverviewComponent implements OnInit {
       group: [
         {
           field: 'order.ordernumber',
-          dir: 'desc',
+          // dir: 'desc',
+          aggregates: [{ field: 'total', aggregate: 'sum' }],
         },
       ],
     },
@@ -426,8 +433,6 @@ export class OrderOverviewComponent implements OnInit {
   }
 
   calculateTotal(pcorder: PCOrder) {
-    console.log(pcorder);
-
     let pcprice: number = pcorder.pc.price;
 
     console.log(pcorder.additionalparts);
@@ -455,5 +460,9 @@ export class OrderOverviewComponent implements OnInit {
   ) {
     grid.closeRow(rowIndex);
     this.createDialog.grid.formGroup = new FormGroup({});
+  }
+
+  showKeys() {
+    console.log(this.orderGrid.expandedGroupKeys);
   }
 }
